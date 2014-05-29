@@ -1,41 +1,56 @@
 package OurGame;
-//click on "Move "whatever class" to package "OurGame"
  
 import java.awt.*;
-import javax.swing.*;
+ 
+import javax.swing.ImageIcon;
  
 public class Bullet {
-        int x, y;//-- Controls the CURRENT location of THIS bullet
-        //Each object of this class is a new BULLET
-         Image img;
-        boolean visible; //sets weather the bullet is visible or not
-        
-        //gets current location of the bullet
-        public int getX(){
-        	return x;
-        }
-        public boolean getVisible(){
-        	return visible;
-        }
-        public int getY(){
-        	return y;
-        }
-        public Image getImage(){
-        	return img;
-        }
-        // starting point of bullet
-        public Bullet(int startX, int startY){
-                ImageIcon newBullet = new ImageIcon("bullet.jpg");
-                img = newBullet.getImage();
+ 
+        int x,y;
+        Image img;
+        boolean visible;
+       
+        public Bullet(int startX, int startY)
+        {
                 x = startX;
                 y = startY;
+                ImageIcon newBullet = new ImageIcon("bullet.jpg");
+                img = newBullet.getImage();
                 visible = true;
         }
-        //bullet speed and how far it will travel
-        public void move(){
-                x = x + 2; //x + bullet speed
-                if (x > 2000)// how far bullet will travel
-                        //Make the bullet invisible
+       
+        public Rectangle getBounds()
+        {
+                return new Rectangle(x,y, 31, 8);
+        }
+        public int getX()
+        {
+                return x;
+        }
+        public int getY()
+        {
+                return y;
+        }
+        public boolean getVisible()
+        {
+                return visible;
+        }
+        public Image getImage()
+        {
+                return img;
+        }
+       
+        public void move()
+        {
+                x = x + 2;
+                if ( x > 700)
                         visible = false;
         }
+       
+        public void setVisible(boolean isVisible)//down
+        {
+                visible = isVisible;
+        }
+       
+ 
 }
