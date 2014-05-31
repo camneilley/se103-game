@@ -11,7 +11,7 @@ public class Board extends JPanel implements ActionListener, Runnable {
         Dude p;
         public Image img;
         Timer time;
-        static int v = 350;
+        static int v = 400;
         Thread animator;
         private Music sound1;
         
@@ -93,7 +93,10 @@ public void checkCollisions()
 }
  
         public void paint(Graphics g) {
- if (lost)
+        	if (lost)
+        	{
+        		System.out.println("You lose.");
+        	}
          
         if (p.dy == 1 && done2 == false) {
                         done2 = true;
@@ -104,13 +107,13 @@ public void checkCollisions()
                 super.paint(g);
                 Graphics2D g2d = (Graphics2D) g;
  
-                if ((p.getX() - 590) % 2400 == 0)// p.getX() == 590 || p.getX() == 2990)...
+                if ((p.getX() - 100) % 1500 == 0)// p.getX() == 100 || p.getX() == 2990)...
                         p.nx = 0;
-                if ((p.getX() - 1790) % 2400 == 0)// p.getX() == 1790 || p.getX() == 4190)...
+                if ((p.getX() - 1790) % 1500 == 0)// p.getX() == 1790 || p.getX() == 4190)...
                         p.nx2 = 0;
  
                 g2d.drawImage(img, 685 - p.getnX2(), 0, null);
-                if (p.getX() > 590) {
+                if (p.getX() > 100) {
                         g2d.drawImage(img, 685 - p.getnX(), 0, null);
                 }
                 g2d.drawImage(p.getImage(), p.left, v, null);
@@ -129,11 +132,11 @@ public void checkCollisions()
                 }
                 g2d.setFont(font);
                 g2d.setColor(Color.BLUE);
-                g2d.drawString("Ammo left: " + p.ammo, 500, 20);
+                g2d.drawString("Ammo left: " + p.ammo, 100, 20);
                 if (p.x > 400)
                         if (en.Alive() == true)
                                 g2d.drawImage(en.getImage(), en.getX(), en.getY(), null);
-                if (p.x > 500)
+                if (p.x > 100)
                         if (en2.Alive() == true)
                                 g2d.drawImage(en2.getImage(), en2.getX(), en2.getY(), null);
         }
@@ -155,11 +158,11 @@ public void checkCollisions()
  
                 if (h == false)
                         v--;
-                if (v == 125)
+                if (v == 50)
                         h = true;
-                if (h == true && v <= 350) {
+                if (h == true && v <= 400) {
                         v++;
-                        if (v == 350) {
+                        if (v == 400) {
                                 done = true;
                         }
                 }
@@ -176,7 +179,7 @@ public void checkCollisions()
                         cycle();
  
                         timeDiff = System.currentTimeMillis() - beforeTime;
-                        sleep = 10 - timeDiff;
+                        sleep = 5 - timeDiff;
  
                         if (sleep < 0)
                                 sleep = 2;

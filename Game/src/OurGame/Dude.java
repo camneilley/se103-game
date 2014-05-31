@@ -23,7 +23,7 @@ public class Dude {
                 left = 150;
                 nx = 0;
                 nx2= 685;
-                y = 350;
+                y = 400;
                 still = s.getImage();
                 bullets = new ArrayList();
        
