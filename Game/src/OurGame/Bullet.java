@@ -43,7 +43,7 @@ public class Bullet {
         public void move()
         {
                 x = x + 5;
-                if ( x > 700)
+                if ( x > 1250)
                         visible = false;
         }
        

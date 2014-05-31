@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import javax.swing.*;
  
 public class Board extends JPanel implements ActionListener, Runnable {
-        Dude p;
+        Hero p; 
+        Hero h;
         public Image img;
         Timer time;
-        static int v = 400;
+        static int v = 700;
         Thread animator;
         private Music sound1;
+        int killcount = 0;
         
         
 Enemy en;
@@ -30,22 +32,22 @@ boolean lost = false;
 		Music.sound1.play();
 	}
         public Board() {
-                p = new Dude();
+                h = new Hero();
                 addKeyListener(new AL());
                 setFocusable(true);
                 ImageIcon i = new ImageIcon("background.png");
                 img = i.getImage();
                 time = new Timer(5, this);
                 time.start();
-                en = new Enemy(700, 200, "enemy.gif");
-                en2 = new Enemy(700, 200, "enemy.jpg");
+                en = new Enemy(700, 400, "hulk.png");
+                en2 = new Enemy(2000, 400, "hulk.png");
                 //init();
                 new Thread(this).start();
         }
  
         public void actionPerformed(ActionEvent e) {
                 checkCollisions();
-                ArrayList bullets = Dude.getBullets();
+                ArrayList bullets = Hero.getBullets();
                 for (int w = 0; w < bullets.size(); w++)
                 {
                         Bullet m = (Bullet) bullets.get(w);
@@ -55,12 +57,12 @@ boolean lost = false;
                                 bullets.remove(w);
                 }
                
-                p.move();
+                h.move();
                
-                if (p.x > 400)
-                        en.move(p.getdx(), p.getLeft());
-                if (p.x> 400)
-                        en2.move(p.getdx(), p.getLeft());
+                if (h.x > 400)
+                        en.move(h.getdx(), h.getLeft());
+                if (h.x> 400)
+                        en2.move(h.getdx(), h.getLeft());
                 repaint();
         }
        
@@ -69,7 +71,7 @@ public void checkCollisions()
 {
         Rectangle r1 = en.getBounds();
         Rectangle r2 = en2.getBounds();
-        ArrayList bullets = Dude.getBullets();
+        ArrayList bullets = Hero.getBullets();
         for (int w = 0; w < bullets.size(); w++)
         {
                 Bullet m = (Bullet) bullets.get(w);
@@ -78,27 +80,37 @@ public void checkCollisions()
                 {
                         en.isAlive = false;
                         m.visible = false;
+                        killcount++;
                 }
                 else if (r2.intersects(m1)&& en2.Alive())
                 {
                         en2.isAlive = false;
                         m.visible = false;
+                        killcount++;
                 }
         }
        
-        Rectangle d = p.getBounds();
-        if (d.intersects(r1) || d.intersects(r2))
+        Rectangle d = h.getBounds();
+        if (d.intersects(r1))
+        {
+        	if(en.isAlive)
                 lost = true;
-       
+        }
+        if(d.intersects(r2))
+        {
+        	if(en2.isAlive)
+        		lost=true;
+        }
 }
  
         public void paint(Graphics g) {
         	if (lost)
         	{
         		System.out.println("You lose.");
+        		System.exit(0);
         	}
          
-        if (p.dy == 1 && done2 == false) {
+        if (h.dy == 1 && done2 == false) {
                         done2 = true;
                         animator = new Thread(this);
                         animator.start();
@@ -107,23 +119,23 @@ public void checkCollisions()
                 super.paint(g);
                 Graphics2D g2d = (Graphics2D) g;
  
-                if ((p.getX() - 100) % 1500 == 0)// p.getX() == 100 || p.getX() == 2990)...
-                        p.nx = 0;
-                if ((p.getX() - 1790) % 1500 == 0)// p.getX() == 1790 || p.getX() == 4190)...
-                        p.nx2 = 0;
+                if ((h.getX() - 100) % 1500 == 0)// p.getX() == 100 || p.getX() == 2990)...
+                        h.nx = 0;
+                if ((h.getX() - 1790) % 1500 == 0)// p.getX() == 1790 || p.getX() == 4190)...
+                        h.nx2 = 0;
  
-                g2d.drawImage(img, 685 - p.getnX2(), 0, null);
-                if (p.getX() > 100) {
-                        g2d.drawImage(img, 685 - p.getnX(), 0, null);
+                g2d.drawImage(img, 685 - h.getnX2(), 0, null);
+                if (h.getX() > 100) {
+                        g2d.drawImage(img, 685 - h.getnX(), 0, null);
                 }
-                g2d.drawImage(p.getImage(), p.left, v, null);
+                g2d.drawImage(h.getImage(), h.left, v, null);
  
-                if (p.getdx() == -1) {
-                        g2d.drawImage(img, 685 - p.getnX2(), 0, null);
-                        g2d.drawImage(p.getImage(), p.left, v, null);
+                if (h.getdx() == -1) {
+                        g2d.drawImage(img, 685 - h.getnX2(), 0, null);
+                        g2d.drawImage(h.getImage(), h.left, v, null);
                 }
                
-                ArrayList bullets = Dude.getBullets();
+                ArrayList bullets = Hero.getBullets();
                 for (int w = 0; w < bullets.size(); w++)
                 {
                         Bullet m = (Bullet) bullets.get(w);
@@ -132,37 +144,38 @@ public void checkCollisions()
                 }
                 g2d.setFont(font);
                 g2d.setColor(Color.BLUE);
-                g2d.drawString("Ammo left: " + p.ammo, 100, 20);
-                if (p.x > 400)
+                g2d.drawString("Ammo left: " + h.ammo, 100, 20);
+                g2d.drawString("Kill Count: "+killcount, 400, 20);
+                if (h.x > 400)
                         if (en.Alive() == true)
                                 g2d.drawImage(en.getImage(), en.getX(), en.getY(), null);
-                if (p.x > 100)
+                if (h.x > 100)
                         if (en2.Alive() == true)
                                 g2d.drawImage(en2.getImage(), en2.getX(), en2.getY(), null);
         }
  
         private class AL extends KeyAdapter {
                 public void keyReleased(KeyEvent e) {
-                        p.keyReleased(e);
+                        h.keyReleased(e);
                 }
  
                 public void keyPressed(KeyEvent e) {
-                        p.keyPressed(e);
+                        h.keyPressed(e);
                 }
         }
  
-        boolean h = false;
+        boolean done3 = false;
         boolean done = false;
  
         public void cycle() {
  
-                if (h == false)
+                if (done3 == false)
                         v--;
                 if (v == 50)
-                        h = true;
-                if (h == true && v <= 400) {
+                        done3 = true;
+                if (done3 == true && v <= 475) {
                         v++;
-                        if (v == 400) {
+                        if (v == 475) {
                                 done = true;
                         }
                 }
@@ -179,7 +192,7 @@ public void checkCollisions()
                         cycle();
  
                         timeDiff = System.currentTimeMillis() - beforeTime;
-                        sleep = 5 - timeDiff;
+                        sleep = 8 - timeDiff;
  
                         if (sleep < 0)
                                 sleep = 2;
@@ -191,7 +204,7 @@ public void checkCollisions()
                         beforeTime = System.currentTimeMillis();
                 }
                 done = false;
-                h = false;
+                done3 = false;
                 done2 = false;
         }
  
